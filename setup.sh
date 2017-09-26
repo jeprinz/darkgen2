@@ -71,7 +71,7 @@ if [ -n "$INSTALL_MADGRAPH" ]; then
 	if [ -n "$INSTALL_PYTHIA" ]; then
 		$ECHO "Download pythia8226.tgz"
 #		wget -q http://home.thep.lu.se/~torbjorn/pythia8/pythia8226.tgz
-		wget -q 'https://www.dropbox.com/s/7lr6mbz7crf5mpk/pythia8226a.tgz?dl=1' -O pythia8226a.tgz
+		xrdcp -s root://cmseos.fnal.gov//store/user/pedrok/pythia8226a.tgz .
 #		$ECHO "Download hepmc2.06.09.tgz"
 #		wget -q http://hepmc.web.cern.ch/hepmc/releases/hepmc2.06.09.tgz
 	fi

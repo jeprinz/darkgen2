@@ -4,7 +4,7 @@
 ! All masses & widths in GeV, lifetimes in millimeter
 
 ! 1) Settings used in the main program.
-Main:numberOfEvents = 1000         	! number of events to generate
+Main:numberOfEvents = 10000         	! number of events to generate
 
 ! 2) Settings related to output in init(), next() and stat().
 Init:showChangedSettings = on      ! list changed settings

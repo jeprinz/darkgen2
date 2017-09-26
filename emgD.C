@@ -97,6 +97,9 @@ struct MyPlots
 
 	TH1 *D0avgDist;
 
+	TH1 *nTracksTopJets;
+	TH1 *nTracksDarkJets;
+
 };
 
 //------------------------------------------------------------------------------
@@ -119,6 +122,18 @@ void BookHistograms(ExRootResult *result, MyPlots *plots)
 			"nTRK", "number of tracks",
 			"number of tracks", "number of events",
 			500, 0.0, 500.0);
+
+	//a couple I added for number of tracks in dark and top jets
+	plots->nTracksTopJets = result->AddHist1D(
+			"nTRK", "number of tracks",
+			"number of tracks", "number of events",
+			500, 0.0, 500.0);
+
+	plots->nTracksDarkJets = result->AddHist1D(
+			"nTRK", "number of tracks",
+			"number of tracks", "number of events",
+			500, 0.0, 500.0);
+	//
 
 	plots->ftrkPT = result->AddHist1D(
 			"track_pt", "track P_{T}",
