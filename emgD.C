@@ -45,62 +45,66 @@ bool isQuark(int id){
 	return abs(id) >= 1 && abs(id) <= 8;
 }
 
-struct MyPlots
+struct Variables
 {
-	TH1 *Count;
-	TH1 *fJetPT;
-	TH1 *fJetAM;
-	TH1 *fJetAMp;
-	TH1 *fJetD0max;
-	TH1 *fJetD0med;
-	TH1 *fJetTHmed;
-	TH1 *fnJet;
-	TH1 *fnTRK;
-	TH1 *ftrkPT;
-	TH1 *ftrkTH;
-	TH1 *ftrkD0;
-	TH1 *ftrkD0Error;
-	TH1 *ftrkD0sig;
-	TH1 *fMissingET;
-	TH1 *felectronPT;
-	TH1 *fmuonPT;
-	TH1 *fHT;
-	TH1 *fdqd0;
-	TH1 *fdd0;
+	vector<string> names;
+	int addVariable(string name){
+		names.push_back(name);
+		return names.size() - 1;
+	}
+	int fJetPT = addVariable("fJetPT");
+	int fJetAM = addVariable("fJetAM");
+	int fJetAMp = addVariable("fJetAMp");
+	int fJetD0max = addVariable("fJetD0max");
+	int fJetD0med = addVariable("fJetD0med");
+	int fJetTHmed = addVariable("fJetTHmed");
+	int fnJet = addVariable("fnJet");
+	int fnTRK = addVariable("fnTRK");
+	int ftrkPT = addVariable("ftrkPT");
+	int ftrkTH = addVariable("ftrkTH");
+	int ftrkD0 = addVariable("ftrkD0");
+	int ftrkD0Error = addVariable("ftrkD0Error");
+	int ftrkD0sig = addVariable("ftrkD0sig");
+	int fMissingET = addVariable("fMissingET");
+	int felectronPT = addVariable("felectronPT");
+	int fmuonPT = addVariable("fmuonPT");
+	int fHT = addVariable("fHT");
+	int fdqd0 = addVariable("fdqd0");
+	int fdd0 = addVariable("fdd0");
 
-	TH1 *fhtnm1;
-	TH1 *fjpt1nm1;
-	TH1 *fjpt2nm1;
-	TH1 *fjpt3nm1;
-	TH1 *fjpt4nm1;
-	TH1 *famnm1;
+	int fhtnm1 = addVariable("fhtnm1");
+	int fjpt1nm1 = addVariable("fjpt1nm1");
+	int fjpt2nm1 = addVariable("fjpt2nm1");
+	int fjpt3nm1 = addVariable("fjpt3nm1");
+	int fjpt4nm1 = addVariable("fjpt4nm1");
+	int famnm1 = addVariable("famnm1");
 
-	TH1 *fnBJet;
-	TH1 *fBJetPT;
+	int fnBJet = addVariable("fnBJet");
+	int fBJetPT = addVariable("fBJetPT");
 
-	TH1 *fptTop;
-	TH1 *fptTopW;
+	int fptTop = addVariable("fptTop");
+	int fptTopW = addVariable("fptTopW");
 
 	//My additions
-	TH1 *fangleWdecay;
-	TH1 *ptOfb;
-	TH1 *ptOfe;
-	TH1 *ptOfmu;
-	TH1 *ptOftau;
+	int fangleWdecay = addVariable("fangleWdecay");
+	int ptOfb = addVariable("ptOfb");
+	int ptOfe = addVariable("ptOfe");
+	int ptOfmu = addVariable("ptOfmu");
+	int ptOftau = addVariable("ptOftau");
 
-	TH1 *angleBvsWQuark;
-	TH1 *angleBvsWLepton;
+	int angleBvsWQuark = addVariable("angleBvsWQuark");
+	int angleBvsWLepton = addVariable("angleBvsWLepton");
 
-	TH1 *sumNeutrinoPt;
+	int sumNeutrinoPt = addVariable("sumNeutrinoPt");
 
-	TH2 *wAngleVsPt;
+	int wAngleVsPt = addVariable("wAngleVsPt");
 
-	TH1 *D0avgDist;
+	int D0avgDist = addVariable("D0avgDist");
 
-	TH1 *nTracksTopJets;
-	TH1 *nTracksDarkJets;
+	int nTracksTopJets = addVariable("nTracksTopJets");
+	int nTracksDarkJets = addVariable("nTracksDarkJets");
 
-};
+} variables;
 
 //------------------------------------------------------------------------------
 
@@ -109,297 +113,7 @@ class ExRootTreeReader;
 
 //------------------------------------------------------------------------------
 
-void BookHistograms(ExRootResult *result, MyPlots *plots)
-{
-	THStack *stack;
-	TLegend *legend;
-	TPaveText *comment;
-
-
-	//book histograms for tracks
-
-	plots->fnTRK = result->AddHist1D(
-			"nTRK", "number of tracks",
-			"number of tracks", "number of events",
-			500, 0.0, 500.0);
-
-	//a couple I added for number of tracks in dark and top jets
-	plots->nTracksTopJets = result->AddHist1D(
-			"nTRK", "number of tracks",
-			"number of tracks", "number of events",
-			500, 0.0, 500.0);
-
-	plots->nTracksDarkJets = result->AddHist1D(
-			"nTRK", "number of tracks",
-			"number of tracks", "number of events",
-			500, 0.0, 500.0);
-	//
-
-	plots->ftrkPT = result->AddHist1D(
-			"track_pt", "track P_{T}",
-			"track P_{T}, GeV/c", "number of tracks",
-			50, 0.0, 50.0);
-
-
-	plots->ftrkTH = result->AddHist1D(
-			"track_th", "track TH2D",
-			"track TH2D", "number of tracks",
-			50, 0.0, 0.7);
-
-	plots->ftrkD0 = result->AddHist1D(
-			"track_d0", "track D_{0}",
-			"track D_{0}, mm", "number of tracks",
-			50, -1.0, 1.0);
-
-	plots->ftrkD0Error = result->AddHist1D(
-			"track_d0Error", "track D_{0} Error",
-			"track D_{0} Error, mm", "number of tracks",
-			50, -0.5, 0.5);
-
-
-
-	plots->ftrkD0sig = result->AddHist1D(
-			"track_d0sig", "track D_{0} sig",
-			"track D_{0} sig", "number of tracks",
-			50, -5.0, 5.0);
-
-
-	// book histograms for jets
-
-
-	plots->fnJet = result->AddHist1D(
-			"nJet", "number of jets",
-			"number of jets", "number of events",
-			50, 0.0, 50.0);
-
-	plots->fJetPT = result->AddHist1D(
-			"jet_pt", "jet P_{T}",
-			"jet P_{T}, GeV/c", "number of jet",
-			50, 0.0, 500.0);
-
-
-	plots->fJetAM = result->AddHist1D(
-			"jet_alphamax", "jet alphamax",
-			"alphamax 4 leading jets", "number of jet",
-			50, 0.0, 1.0);
-
-
-	plots->fJetAMp = result->AddHist1D(
-			"jet_alphamaxp", "jet alphamaxp",
-			"alphamaxp 4 leading jets", "number of jet",
-			50, 0.0, 1.0);
-
-
-	plots->fJetD0max = result->AddHist1D(
-			"jet_D0max", "jet d0 max",
-			"d0max 4 leading jets", "number of jet",
-			50, 0.0, 1.0);
-
-	plots->fJetD0med = result->AddHist1D(
-			"jet_D0med", "jet d0 med",
-			"d0med 4 leading jets", "number of jet",
-			50, 0.0, 1.0);
-
-
-	//Another plot I added
-	plots->D0avgDist = result->AddHist1D(
-			"D0avgDist", "avg D0 distribution",
-			"D0", "number of tracks",
-			50, -1.0, 1.0/*500.0*/);
-
-
-
-	plots->fJetTHmed = result->AddHist1D(
-			"jet_THmed", "jet th med",
-			"theta2d med 4 leading jets", "number of jet",
-			50, 0.0, 0.7);
-
-	plots->fdqd0 = result->AddHist1D(
-			"fdqd0", "dq d0",
-			"impact parameter for tracks in jets matched to dark quarks", "number of tracks",
-			50, -1., 1.);
-
-
-	plots->fdd0 = result->AddHist1D(
-			"fdd0", "d d0",
-			"impact parameter for tracks in jets matched to down quarks", "number of tracks",
-			50, -1., 1.);
-
-	plots->fnBJet = result->AddHist1D(
-			"nBJet", "number of bjets",
-			"number of bjets", "number of events",
-			50, 0.0, 50.0);
-
-	plots->fBJetPT = result->AddHist1D(
-			"bjet_pt", "bjet P_{T}",
-			"bjet P_{T}, GeV/c", "number of bjets",
-			50, 0.0, 500.0);
-
-
-	// plots about tops
-
-	plots->fptTop = result->AddHist1D(
-			"ptTop", "pt of top quarks",
-			"pt of top quarks", "number of events",
-			50, 0.0, 1000.0);
-
-
-	plots->fptTopW = result->AddHist1D(
-			"ptTopW", "pt of W from top quarks",
-			"pt of W from top quarks", "number of events",
-			50, 0.0, 1000.0);
-
-
-
-	// book more histograms
-
-
-	plots->fMissingET = result->AddHist1D(
-			"missing_et", "Missing E_{T}",
-			"Missing E_{T}, GeV", "number of events",
-			100, 0.0, 1000.0);
-
-
-	plots->fHT = result->AddHist1D(
-			"HT", "HT",
-			"HT, GeV", "number of events",
-			100, 0.0, 5000.0);
-
-
-	plots->felectronPT = result->AddHist1D(
-			"electronPT", "electronPT",
-			"electron PT, GeV", "number of events",
-			100, 0.0, 750.0);
-
-
-	plots->fmuonPT = result->AddHist1D(
-			"muonPT", "muonPT",
-			"muon PT, GeV", "number of events",
-			100, 0.0, 750.0);
-
-
-	//N-1 histograms
-	plots->fhtnm1 = result->AddHist1D(
-			"HTnm1", "HTnm1",
-			"HT n-1, GeV", "number of events",
-			100, 0.0, 5000.0);
-
-	plots->fjpt1nm1 = result->AddHist1D(
-			"jet1ptnm1", "jet1 P_{T} nm1",
-			"jet1 P_{T} n-1, GeV/c", "number of jet",
-			50, 0.0, 500.0);
-
-
-	plots->fjpt2nm1 = result->AddHist1D(
-			"jet2ptnm1", "jet2 P_{T} nm1",
-			"jet2 P_{T} n-1, GeV/c", "number of jet",
-			50, 0.0, 500.0);
-
-
-	plots->fjpt3nm1 = result->AddHist1D(
-			"jet3ptnm1", "jet3 P_{T} nm1",
-			"jet3 P_{T} n-1, GeV/c", "number of jet",
-			50, 0.0, 500.0);
-
-
-	plots->fjpt4nm1 = result->AddHist1D(
-			"jet4ptnm1", "jet4 P_{T} nm1",
-			"jet4 P_{T} n-1, GeV/c", "number of jet",
-			50, 0.0, 500.0);
-
-
-
-	plots->famnm1 = result->AddHist1D(
-			"jetalphamaxnm1", "jet alphamax nm1",
-			"alphamax n-1 4 leading jets", "number of jet",
-			50, 0.0, 1.0);
-
-	//book histogram for angle between 2 quarks from W decay
-
-	plots->fangleWdecay = result->AddHist1D(
-			"fangleWdecay", "angle between quarks from W decay",
-			"angle", "how many",
-			100, 0, 10.0, 0, 0);
-
-	//histograms of pt of things that decay from top and W
-	plots->ptOfb = result->AddHist1D(
-			"ptOfb", "pt of b quarks from top decay",
-			"pt", "how many",
-			50, 0, 750.0);
-	plots->ptOfe = result->AddHist1D(
-			"ptOfe", "pt of electrons from W decay",
-			"pt", "how many",
-			50, 0, 750.0);
-	plots->ptOfmu = result->AddHist1D(
-			"ptOfmu", "pt of muons form W decay",
-			"pt", "how many",
-			50, 0, 750.0);
-	plots->ptOftau = result->AddHist1D(
-			"ptOftau", "pt of taus from W decay",
-			"pt", "how many",
-			50, 0, 750.0);
-
-	plots->angleBvsWQuark = result->AddHist1D(
-			"angleBvsWQuark", "angle between b and quarks from W",
-			"pt", "how many",
-			50, 0, 10.0);
-	plots->angleBvsWLepton = result->AddHist1D(
-			"angleBvsWLepton", "angle between b and leptons from W",
-			"pt", "how many",
-			50, 0, 10.0);
-
-	plots->sumNeutrinoPt = result->AddHist1D(
-			"sumNeutrinoPt", "magnitude of vector sum of neutrino Pt",
-			"pt", "how many",
-			30, 0, 700.0);
-
-	plots->wAngleVsPt = result->AddHist2D(
-			"wAngleVsPt", "angle vs pt of w",
-			"pt", "angle",
-			50, 0, 750,
-			50, 0, 10,
-			0, 0);
-
-
-	// cut flow
-	plots->Count = result->AddHist1D(
-			"Count", "Count","cut flow","number of events",3,0,3);
-	plots->Count->SetStats(0);
-	plots->Count->SetCanExtend(TH1::kAllAxes);
-
-
-	// book general comment
-
-	/*
-  comment = result->AddComment(0.64, 0.86, 0.98, 0.98);
-  comment->AddText("demonstration plot");
-  comment->AddText("emg");
-
-  // attach comment to single histograms
-
-  result->Attach(plots->fJetPT[0], comment);
-  result->Attach(plots->fJetPT[1], comment);
-	 */
-
-	// show histogram statisics for MissingET
-	plots->fMissingET->SetStats();
-	plots->fHT->SetStats();
-	plots->fJetPT->SetStats();
-	plots->ftrkPT->SetStats();
-	plots->ftrkTH->SetStats();
-	plots->ftrkD0->SetStats();
-	plots->ftrkD0Error->SetStats();
-	plots->ftrkD0sig->SetStats();
-	plots->fJetAM->SetStats();
-	plots->fJetAMp->SetStats();
-	plots->fJetTHmed->SetStats();
-
-	plots->fBJetPT->SetStats();
-}
-
-//------------------------------------------------------------------------------
-
-void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
+TNtuple *AnalyseEvents(ExRootTreeReader *treeReader)
 {
 	TClonesArray *branchParticle = treeReader->UseBranch("Particle");
 	TClonesArray *branchTRK = treeReader->UseBranch("Track");
@@ -430,12 +144,24 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 	Int_t i;
 	float dR;
 
-	// Loop over all events
+	//Create NTuple
+	std::stringstream ss;//Step 1: build up string that has variable names for the ntuple
+	for(size_t i = 0; i < variables.names.size(); ++i) {
+		if(i != 0) ss << ":";
+		ss << variables.names[i];
+	}
+	TNtuple *ntuple = new TNtuple("ntuple","variables",ss.str().c_str());
 
+	// Loop over all events
+	
 	int ijloop = allEntries;
 	if(idbg>0) ijloop = 10;
 	for(entry = 0; entry < ijloop; ++entry)
 	{
+		//Set up array to hold this row of the ntuple
+		float values[variables.names.size()];
+
+
 		if(idbg>0) myfile<<std::endl;
 		if(idbg>0) myfile<<"event "<<entry<<std::endl;
 		// Load selected branches with data from specified event
@@ -502,26 +228,26 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 
 
 			prt = (GenParticle*) branchParticle->At(pointtops[i]);
-			plots->fptTop->Fill(prt->PT);
+			values[variables.fptTop] = prt->PT;
 			prtT = (GenParticle*) branchParticle->At(prt->D1);
 
 			//check first daughter particle
 			if(abs(prtT->PID) == 24){//check for W
-				plots->fptTopW->Fill(prtT->PT);
+				values[variables.fptTopW] = prtT->PT;
 				w = prtT;
 			} else if (abs(prtT->PID) == 5){//check for b
 				b = prtT;
-				plots->ptOfb->Fill(b->PT);
+				values[variables.ptOfb] = b->PT;
 			}
 
 			//check second daughter particle
 			prtT = (GenParticle*) branchParticle->At(prt->D2);
 			if(abs(prtT->PID)==24){//check for W
-				plots->fptTopW->Fill(prtT->PT);
+				values[variables.fptTopW] = prtT->PT;
 				w = prtT;
 			} else if (abs(prtT->PID) == 5){//check for b
 				b = prtT;
-				plots->ptOfb->Fill(b->PT);
+				values[variables.ptOfb] = b->PT;
 			}
 
 			if (w){//if a W was found
@@ -535,18 +261,18 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 
 				if (isQuark(daughters[0]->PID) && isQuark(daughters[1]->PID)){
 					float angle = DeltaR(daughters[0]->Eta, daughters[0]->Phi, daughters[1]->Eta, daughters[1]->Phi);
-					plots->fangleWdecay->Fill(angle);
-					plots->wAngleVsPt->Fill(w->PT, angle);
+					values[variables.fangleWdecay] = angle;
+					values[variables.wAngleVsPt] = w->PT, angle;
 				}
 
 				for (GenParticle *daughter: daughters){
 					int pid = abs(daughter->PID);
 					if (pid == 11){//if electron
-						plots->ptOfe->Fill(daughter->PT);
+						values[variables.ptOfe] = daughter->PT;
 					} else if (pid == 13){
-						plots->ptOfmu->Fill(daughter->PT);
+						values[variables.ptOfmu] = daughter->PT;
 					} else if (pid == 15){
-						plots->ptOftau->Fill(daughter->PT);
+						values[variables.ptOftau] = daughter->PT;
 					}
 				}
 
@@ -555,10 +281,10 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 					GenParticle *lepton = d0IsLep? daughters[0]: d1IsLep? daughters[1]: NULL;
 
 					if (quark){
-						plots->angleBvsWQuark->Fill(DeltaR(quark->Eta, quark->Phi, b->Eta, b->Phi));
+						values[variables.angleBvsWQuark] = DeltaR(quark->Eta, quark->Phi, b->Eta, b->Phi);
 					}
 					if (lepton){
-						plots->angleBvsWLepton->Fill(DeltaR(lepton->Eta, lepton->Phi, b->Eta, b->Phi));
+						values[variables.angleBvsWLepton] = DeltaR(lepton->Eta, lepton->Phi, b->Eta, b->Phi);
 					}
 				}
 
@@ -575,7 +301,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 						z += daughters[1]->Pz;
 					}
 					float magnitude = sqrt(x*x + y*y + z*z);
-					plots->sumNeutrinoPt->Fill(magnitude);
+					values[variables.sumNeutrinoPt] = magnitude;
 				}
 
 			}
@@ -585,7 +311,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 		// Analyse tracks
 		int ntrk = branchTRK->GetEntriesFast();
 		vector<float> trkTheta(ntrk);
-		plots->fnTRK->Fill(ntrk);
+		values[variables.fnTRK] = ntrk;
 		for(int i=0;i<ntrk;i++ ) {//Loop over all tracks
 			trk = (Track*) branchTRK->At(i);
 			// doing this at the generator level because I am too lazy to figure out the formulas
@@ -604,18 +330,18 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 				float costt = (x1*px1+y1*py1+z1*pz1)/sqrt(x1*x1+y1*y1+z1*z1)/sqrt(px1*px1+py1*py1+pz1*pz1);
 				trkTheta[i]=acos(costt);
 			}
-			plots->ftrkTH->Fill(trkTheta[i]);
-			plots->ftrkPT->Fill(trk->PT);
-			plots->ftrkD0->Fill(trk->D0);
-			plots->ftrkD0Error->Fill(fabs(trk->ErrorD0));  // for some reason, delphse pulls this from a caussian with a mean of zero, so half the time it is neg, which makes no sense to me
+			values[variables.ftrkTH] = trkTheta[i];
+			values[variables.ftrkPT] = trk->PT;
+			values[variables.ftrkD0] = trk->D0;
+			values[variables.ftrkD0Error] = fabs(trk->ErrorD0);  // for some reason, delphse pulls this from a caussian with a mean of zero, so half the time it is neg, which makes no sense to me
 			//      std::cout<<"track d0 d0error "<<trk->D0<<" "<<trk->ErrorD0<<std::endl;
-			if((trk->ErrorD0)>0) plots->ftrkD0sig->Fill(fabs((trk->D0)/(trk->ErrorD0)));
+			if((trk->ErrorD0)>0) values[variables.ftrkD0sig] = fabs(trk->D0/(trk->ErrorD0));
 		}
 
 
 		// plots for jets and calculate displaced jet variables
 		int njet = branchJet->GetEntriesFast();
-		plots->fnJet->Fill(njet);
+		values[variables.fnJet] = njet;
 
 		vector<float> alphaMax(njet);  // not really alpha max but best we can do here
 		vector<float> alphaMaxp(njet);
@@ -639,11 +365,11 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 			// use 0 for loose, 1 for medium, and 2 for tight
 			if (isBJet) {
 				nbjets++;
-				plots->fBJetPT->Fill(jet->PT);
+				values[variables.fBJetPT] = jet->PT;
 			}
 
 			if(idbg>0) myfile<<"jet "<<i<<"  with pt, eta, phi of "<<jet->PT<<" "<<jet->Eta<<" "<<jet->Phi<<std::endl;
-			plots->fJetPT->Fill(jet->PT);
+			values[variables.fJetPT] = jet->PT;
 			adkq[i]=false;
 			adq[i]=false;
 			//see if it matches a dark or down quark
@@ -686,12 +412,12 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 				if(dR<ConeSize) {
 					if((trk->PT)>1) {
 						if(adkq[i]) {
-							plots->fdqd0->Fill(trk->D0);
+							values[variables.fdqd0] = trk->D0;
 						}
 						if(adq[i]) {
-							plots->fdd0->Fill(trk->D0);
+							values[variables.fdd0] = trk->D0;
 						}
-						plots->D0avgDist->Fill(trk->D0);
+						values[variables.D0avgDist] = trk->D0;
 						ntrkj+=1;
 						if((trk->D0)>D0Max[i]) D0Max[i]=(trk->D0);
 						D0Med[i]=D0Med[i]+(trk->D0);
@@ -733,14 +459,14 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 
 			if(idbg>0) myfile<<"alpha max is "<<alphaMax[i]<<std::endl;
 		} // end loop over all jets
-		plots->fnBJet->Fill(nbjets);
+		values[variables.fnBJet] = nbjets;
 
 
 		// Analyse missing ET
 		if(branchMissingET->GetEntriesFast() > 0)
 		{
 			met = (MissingET*) branchMissingET->At(0);
-			plots->fMissingET->Fill(met->MET);
+			values[variables.fMissingET] = met->MET;
 		}
 
 
@@ -748,7 +474,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 		if(branchScalarHT->GetEntriesFast() > 0)
 		{
 			ht = (ScalarHT*) branchScalarHT->At(0);
-			plots->fHT->Fill(ht->HT);
+			values[variables.fHT] = ht->HT;
 		}
 
 
@@ -756,7 +482,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 		for(i = 0; i < branchElectron->GetEntriesFast(); ++i)
 		{
 			electron = (Electron*) branchElectron->At(i);
-			plots->felectronPT->Fill(electron->PT);
+			values[variables.felectronPT] = electron->PT;
 		}
 
 
@@ -764,7 +490,7 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 		for(i = 0; i < branchMuon->GetEntriesFast(); ++i)
 		{
 			muon = (Muon*) branchMuon->At(i);
-			plots->fmuonPT->Fill(muon->PT);
+			values[variables.fmuonPT] = muon->PT;
 		}
 
 
@@ -773,11 +499,11 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 		int nalpha=0;
 		int iloop=min(4,njet);
 		for(int i=0;i<iloop;i++) {
-			plots->fJetAM->Fill(alphaMax[i]);
-			plots->fJetAMp->Fill(alphaMaxp[i]);
-			plots->fJetD0max->Fill(D0Max[i]);
-			plots->fJetD0med->Fill(D0Med[i]);
-			plots->fJetTHmed->Fill(THMed[i]);
+			values[variables.fJetAM] = alphaMax[i];
+			values[variables.fJetAMp] = alphaMaxp[i];
+			values[variables.fJetD0max] = D0Max[i];
+			values[variables.fJetD0med] = D0Med[i];
+			values[variables.fJetTHmed] = THMed[i];
 			if(alphaMax[i]<ALPHAMAXCUT) {
 				nalpha+=1;
 				if(idbg>0) myfile<<" jet "<<i<<" passes alphamax cut with alphamax of "<<alphaMax[i]<<std::endl;
@@ -811,60 +537,29 @@ void AnalyseEvents(ExRootTreeReader *treeReader, MyPlots *plots)
 
 		//n-1 plots
 
-		if(Pnjet&&Ppt1&&Ppt2&&Ppt3&&Ppt4&&Pam) plots->fhtnm1->Fill(ht->HT);
+		if(Pnjet&&Ppt1&&Ppt2&&Ppt3&&Ppt4&&Pam) values[variables.fhtnm1] = ht->HT;
 		jet = (Jet*) branchJet->At(0);
-		if(Pnjet&&Pht&&Ppt2&&Ppt3&&Ppt4&&Pam) plots->fjpt1nm1->Fill(jet->PT);
+		if(Pnjet&&Pht&&Ppt2&&Ppt3&&Ppt4&&Pam) values[variables.fjpt1nm1] = jet->PT;
 		jet = (Jet*) branchJet->At(1);
-		if(Pnjet&&Pht&&Ppt1&&Ppt3&&Ppt4&&Pam) plots->fjpt2nm1->Fill(jet->PT);
+		if(Pnjet&&Pht&&Ppt1&&Ppt3&&Ppt4&&Pam) values[variables.fjpt2nm1] = jet->PT;
 		jet = (Jet*) branchJet->At(2);
-		if(Pnjet&&Pht&&Ppt1&&Ppt2&&Ppt4&&Pam) plots->fjpt3nm1->Fill(jet->PT);
+		if(Pnjet&&Pht&&Ppt1&&Ppt2&&Ppt4&&Pam) values[variables.fjpt3nm1] = jet->PT;
 		jet = (Jet*) branchJet->At(3);
-		if(Pnjet&&Pht&&Ppt1&&Ppt2&&Ppt3&&Pam) plots->fjpt4nm1->Fill(jet->PT);
+		if(Pnjet&&Pht&&Ppt1&&Ppt2&&Ppt3&&Pam) values[variables.fjpt4nm1] = jet->PT;
 
 		if(Pnjet&&Pht&&Ppt1&&Ppt2&&Ppt3&&Ppt4) {
-			plots->famnm1->Fill(alphaMax[0]);
-			plots->famnm1->Fill(alphaMax[1]);
-			plots->famnm1->Fill(alphaMax[2]);
-			plots->famnm1->Fill(alphaMax[3]);
+			values[variables.famnm1] = alphaMax[0];
+			values[variables.famnm1] = alphaMax[1];
+			values[variables.famnm1] = alphaMax[2];
+			values[variables.famnm1] = alphaMax[3];
 		}
+		
 
-
-
-		plots->Count->Fill("All",1);
-		if(Pnjet) {
-			plots->Count->Fill("4 jets",1);
-			if(Pht) {
-				plots->Count->Fill("HT",1);
-				if(Ppt1) {
-					plots->Count->Fill("PT1CUT",1);
-					if(Ppt2) {
-						plots->Count->Fill("PT2CUT",1);
-						if(Ppt3) {
-							plots->Count->Fill("PT3CUT",1);
-							if(Ppt4) {
-								plots->Count->Fill("PT4CUT",1);
-								if(Pam) {
-									plots->Count->Fill("AM",1);
-									if(idbg>0) myfile<<" event passes all cuts"<<std::endl;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
+		//Now that we have collected all of our values for this event, we need to put the event into the ntuple
+		ntuple->Fill(values);
 	}
+	return ntuple;
 }
-
-//------------------------------------------------------------------------------
-
-void PrintHistograms(ExRootResult *result, MyPlots *plots)
-{
-	result->Print("png");
-}
-
-//------------------------------------------------------------------------------
 
 void emgD(const char *inputFile)
 {
@@ -874,29 +569,33 @@ void emgD(const char *inputFile)
 	chain->Add(inputFile);
 
 	ExRootTreeReader *treeReader = new ExRootTreeReader(chain);
-	ExRootResult *result = new ExRootResult();
+	//ExRootResult *result = new ExRootResult();
 
-	MyPlots *plots = new MyPlots;
+	//Data *plots = new Data;
 
 	myfile.open("debug.txt");
 
-	BookHistograms(result, plots);
+	//BookHistograms(result, plots);
+	
+	TFile outFile("results.root","RECREATE");
 
-	AnalyseEvents(treeReader, plots);
+	TNtuple *ntuple = AnalyseEvents(treeReader);
+	ntuple->Write();
+	outFile.Close();
 
-	plots->Count->LabelsDeflate();
-	plots->Count->LabelsOption("v");
+	//plots->Count->LabelsDeflate();
+	//plots->Count->LabelsOption("v");
 
-//	PrintHistograms(result, plots);
+//	//PrintHistograms(result, plots);
 
-	result->Write("results.root");
+	//result->Write("results.root");
 
 	myfile.close();
 
 	cout << "** Exiting..." << endl;
 
-	delete plots;
-	delete result;
+	//delete plots;
+	//delete result;
 	delete treeReader;
 	delete chain;
 }
