@@ -150,7 +150,7 @@ TNtuple *AnalyseEvents(ExRootTreeReader *treeReader)
 		if(i != 0) ss << ":";
 		ss << variables.names[i];
 	}
-	TNtuple *ntuple = new TNtuple("ntuple","variables",ss.str().c_str());
+	TNtuple *ntuple = new TNtuple("variables","variables",ss.str().c_str());
 
 	// Loop over all events
 	
